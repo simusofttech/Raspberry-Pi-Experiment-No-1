@@ -1,0 +1,1525 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Raspberry Pi Experiment No. 1 | Push Button Controlled LED
+    </title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+            margin: 0;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background: #f3f6fa;
+
+            color: #111827;
+
+            line-height: 1.65;
+        }
+
+
+        /* ==============================
+           HEADER
+        ============================== */
+
+        header {
+            padding:
+                55px 20px 50px;
+
+            text-align: center;
+
+            color: white;
+
+            background: #2f6be6;
+        }
+
+
+        header h1 {
+            margin: 0;
+
+            font-size: 38px;
+
+            font-weight: 700;
+        }
+
+
+        header p {
+            margin:
+                15px 0 0;
+
+            font-size: 19px;
+        }
+
+
+        /* ==============================
+           NAVIGATION
+        ============================== */
+
+        nav {
+            position: sticky;
+
+            top: 0;
+
+            z-index: 100;
+
+            display: flex;
+
+            justify-content: center;
+
+            flex-wrap: wrap;
+
+            gap: 24px;
+
+            padding:
+                17px 20px;
+
+            background: white;
+
+            border-bottom:
+                1px solid #d8dee8;
+        }
+
+
+        nav a {
+            color: #0c328c;
+
+            text-decoration: none;
+
+            font-weight: bold;
+
+            font-size: 15px;
+        }
+
+
+        nav a:hover {
+            color: #2f6be6;
+        }
+
+
+        /* ==============================
+           MAIN CONTAINER
+        ============================== */
+
+        .container {
+            width: 90%;
+
+            max-width: 1050px;
+
+            margin: auto;
+
+            padding:
+                38px 0 60px;
+        }
+
+
+        /* ==============================
+           SECTION CARD
+        ============================== */
+
+        .section {
+            margin-bottom: 26px;
+
+            padding: 30px;
+
+            background: white;
+
+            border:
+                1px solid #d8dee8;
+
+            border-radius: 11px;
+
+            box-shadow:
+                0 4px 14px
+                rgba(15, 23, 42, 0.05);
+        }
+
+
+        .section h2 {
+            margin:
+                0 0 20px;
+
+            padding-bottom: 11px;
+
+            color: #12358b;
+
+            border-bottom:
+                2px solid #d7e5ff;
+
+            font-size: 27px;
+        }
+
+
+        .section h3 {
+            margin-top: 25px;
+
+            color: #12358b;
+        }
+
+
+        /* ==============================
+           TABLE
+        ============================== */
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+
+        table {
+            width: 100%;
+
+            min-width: 550px;
+
+            margin-top: 15px;
+
+            border-collapse: collapse;
+        }
+
+
+        th,
+        td {
+            padding: 13px;
+
+            text-align: left;
+
+            border:
+                1px solid #d8dee8;
+        }
+
+
+        th {
+            color: white;
+
+            background: #2f6be6;
+        }
+
+
+        tr:nth-child(even) {
+            background: #f7f9fc;
+        }
+
+
+        /* ==============================
+           CONNECTION BOX
+        ============================== */
+
+        .connection-box {
+            margin-top: 15px;
+
+            padding: 16px;
+
+            text-align: center;
+
+            background: #f5f8fd;
+
+            border:
+                1px solid #d8e2f0;
+
+            border-radius: 7px;
+
+            font-family:
+                Consolas,
+                monospace;
+        }
+
+
+        /* ==============================
+           COMPONENTS
+        ============================== */
+
+        .components-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 15px;
+
+            margin-top: 18px;
+        }
+
+
+        .component {
+            padding: 20px;
+
+            text-align: center;
+
+            background: #f7f9fc;
+
+            border:
+                1px solid #d8dee8;
+
+            border-radius: 8px;
+        }
+
+
+        .component strong {
+            display: block;
+
+            margin-bottom: 6px;
+
+            color: #12358b;
+
+            font-size: 16px;
+        }
+
+
+        .component p {
+            margin: 0;
+
+            color: #64748b;
+
+            font-size: 14px;
+        }
+
+
+        /* ==============================
+           WORKING STEPS
+        ============================== */
+
+        .steps {
+            margin: 0;
+
+            padding-left: 22px;
+        }
+
+
+        .steps li {
+            margin-bottom: 10px;
+        }
+
+
+        /* ==============================
+           CODE
+        ============================== */
+
+        .code-header {
+            display: flex;
+
+            justify-content:
+                space-between;
+
+            align-items: center;
+
+            padding:
+                11px 15px;
+
+            color: white;
+
+            background: #172033;
+
+            border-radius:
+                7px 7px 0 0;
+        }
+
+
+        .copy-button {
+            padding:
+                7px 13px;
+
+            color: white;
+
+            background: #2f6be6;
+
+            border: none;
+
+            border-radius: 5px;
+
+            cursor: pointer;
+
+            font-weight: bold;
+        }
+
+
+        .copy-button:hover {
+            background: #1e55c5;
+        }
+
+
+        pre {
+            margin: 0;
+
+            padding: 20px;
+
+            overflow-x: auto;
+
+            color: #e5e7eb;
+
+            background: #0b1120;
+
+            border-radius:
+                0 0 7px 7px;
+
+            font-family:
+                Consolas,
+                "Courier New",
+                monospace;
+
+            font-size: 14px;
+
+            line-height: 1.6;
+        }
+
+
+        /* ==============================
+           OUTPUT
+        ============================== */
+
+        .output-box {
+            padding: 18px;
+
+            color: #e5e7eb;
+
+            background: #111827;
+
+            border-radius: 7px;
+
+            font-family:
+                Consolas,
+                monospace;
+        }
+
+
+        /* ==============================
+           RESULT
+        ============================== */
+
+        .result-box {
+            padding: 18px;
+
+            color: #166534;
+
+            background: #f0fdf4;
+
+            border:
+                1px solid #bbf7d0;
+
+            border-radius: 7px;
+        }
+
+
+        /* ==============================
+           NOTE
+        ============================== */
+
+        .note {
+            margin-top: 18px;
+
+            padding: 15px;
+
+            color: #854d0e;
+
+            background: #fefce8;
+
+            border:
+                1px solid #fde68a;
+
+            border-radius: 7px;
+        }
+
+
+        /* ==============================
+           FOOTER
+        ============================== */
+
+        footer {
+            padding:
+                28px 20px;
+
+            text-align: center;
+
+            color: #64748b;
+
+            background: white;
+
+            border-top:
+                1px solid #d8dee8;
+        }
+
+
+        footer strong {
+            color: #12358b;
+        }
+
+
+        /* ==============================
+           RESPONSIVE
+        ============================== */
+
+        @media (
+            max-width: 700px
+        ) {
+
+            header h1 {
+                font-size: 29px;
+            }
+
+
+            header p {
+                font-size: 17px;
+            }
+
+
+            nav {
+                gap: 13px;
+            }
+
+
+            .container {
+                width: 94%;
+            }
+
+
+            .section {
+                padding: 21px;
+            }
+
+
+            .components-grid {
+                grid-template-columns:
+                    1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+
+<body>
+
+
+<!-- ==============================
+     HEADER
+============================== -->
+
+<header>
+
+    <h1>
+        Raspberry Pi Experiment No. 1
+    </h1>
+
+    <p>
+        Push Button Controlled LED
+    </p>
+
+</header>
+
+
+
+<!-- ==============================
+     NAVIGATION
+============================== -->
+
+<nav>
+
+    <a href="#aim">
+        Aim
+    </a>
+
+    <a href="#components">
+        Components
+    </a>
+
+    <a href="#connections">
+        Connections
+    </a>
+
+    <a href="#working">
+        Working
+    </a>
+
+    <a href="#procedure">
+        Procedure
+    </a>
+
+    <a href="#code">
+        Code
+    </a>
+
+    <a href="#output">
+        Output
+    </a>
+
+</nav>
+
+
+
+<!-- ==============================
+     MAIN
+============================== -->
+
+<main class="container">
+
+
+
+<!-- ==============================
+     AIM
+============================== -->
+
+<section
+    class="section"
+    id="aim"
+>
+
+    <h2>
+        Aim
+    </h2>
+
+    <p>
+
+        To interface a push button and LED
+        with Raspberry Pi and toggle the LED
+        ON and OFF whenever the push button
+        is pressed.
+
+    </p>
+
+</section>
+
+
+
+<!-- ==============================
+     ABOUT
+============================== -->
+
+<section class="section">
+
+    <h2>
+        About the Experiment
+    </h2>
+
+    <p>
+
+        This experiment demonstrates how
+        digital input and digital output
+        can be controlled using the
+        GPIO pins of a Raspberry Pi.
+
+    </p>
+
+    <p>
+
+        A push button is used as the
+        digital input and an LED is used
+        as the digital output.
+
+    </p>
+
+    <p>
+
+        The LED is connected to
+        <strong>GPIO17</strong>,
+        while the push button is connected
+        to <strong>GPIO27</strong>.
+
+    </p>
+
+    <p>
+
+        Whenever the push button is pressed,
+        the program detects the button event
+        and toggles the current state
+        of the LED.
+
+    </p>
+
+</section>
+
+
+
+<!-- ==============================
+     COMPONENTS
+============================== -->
+
+<section
+    class="section"
+    id="components"
+>
+
+    <h2>
+        Components Required
+    </h2>
+
+
+    <div class="components-grid">
+
+
+        <div class="component">
+
+            <strong>
+                Raspberry Pi
+            </strong>
+
+            <p>
+                Main controller
+            </p>
+
+        </div>
+
+
+        <div class="component">
+
+            <strong>
+                LED
+            </strong>
+
+            <p>
+                Digital output
+            </p>
+
+        </div>
+
+
+        <div class="component">
+
+            <strong>
+                Push Button
+            </strong>
+
+            <p>
+                Digital input
+            </p>
+
+        </div>
+
+
+        <div class="component">
+
+            <strong>
+                Resistor
+            </strong>
+
+            <p>
+                Current limiting
+            </p>
+
+        </div>
+
+
+        <div class="component">
+
+            <strong>
+                Breadboard
+            </strong>
+
+            <p>
+                Circuit assembly
+            </p>
+
+        </div>
+
+
+        <div class="component">
+
+            <strong>
+                Jumper Wires
+            </strong>
+
+            <p>
+                Electrical connections
+            </p>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- ==============================
+     CONNECTIONS
+============================== -->
+
+<section
+    class="section"
+    id="connections"
+>
+
+    <h2>
+        Connections
+    </h2>
+
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Component
+                    </th>
+
+                    <th>
+                        Raspberry Pi Pin
+                    </th>
+
+                    <th>
+                        Function
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                <tr>
+
+                    <td>
+                        LED
+                    </td>
+
+                    <td>
+                        GPIO17
+                    </td>
+
+                    <td>
+                        Digital Output
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        Push Button
+                    </td>
+
+                    <td>
+                        GPIO27
+                    </td>
+
+                    <td>
+                        Digital Input
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <h3>
+        LED Connection
+    </h3>
+
+    <div class="connection-box">
+
+        GPIO17 → Resistor → LED → GND
+
+    </div>
+
+
+    <h3>
+        Push Button Connection
+    </h3>
+
+    <div class="connection-box">
+
+        GPIO27 → Push Button → GND
+
+    </div>
+
+</section>
+
+
+
+<!-- ==============================
+     WORKING
+============================== -->
+
+<section
+    class="section"
+    id="working"
+>
+
+    <h2>
+        Working
+    </h2>
+
+    <p>
+
+        The Raspberry Pi continuously waits
+        for the push button connected to
+        GPIO27 to be pressed.
+
+    </p>
+
+    <p>
+
+        When the push button is pressed,
+        the <strong>pressed()</strong>
+        function is called.
+
+    </p>
+
+    <p>
+
+        Inside this function,
+        the command:
+
+    </p>
+
+
+    <div class="connection-box">
+
+        led.toggle()
+
+    </div>
+
+
+    <p>
+
+        changes the current state of the LED.
+
+    </p>
+
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Current State
+                    </th>
+
+                    <th>
+                        Button
+                    </th>
+
+                    <th>
+                        New State
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                <tr>
+
+                    <td>
+                        LED OFF
+                    </td>
+
+                    <td>
+                        Pressed
+                    </td>
+
+                    <td>
+                        LED ON
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        LED ON
+                    </td>
+
+                    <td>
+                        Pressed
+                    </td>
+
+                    <td>
+                        LED OFF
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==============================
+     PROCEDURE
+============================== -->
+
+<section
+    class="section"
+    id="procedure"
+>
+
+    <h2>
+        Procedure
+    </h2>
+
+
+    <ol class="steps">
+
+        <li>
+
+            Connect the LED to
+            <strong>GPIO17</strong>
+            through a current-limiting resistor.
+
+        </li>
+
+
+        <li>
+
+            Connect the other side
+            of the LED circuit to GND.
+
+        </li>
+
+
+        <li>
+
+            Connect the push button
+            to <strong>GPIO27</strong>.
+
+        </li>
+
+
+        <li>
+
+            Connect the other side
+            of the push button to GND.
+
+        </li>
+
+
+        <li>
+
+            Power ON the Raspberry Pi.
+
+        </li>
+
+
+        <li>
+
+            Open the Raspberry Pi terminal.
+
+        </li>
+
+
+        <li>
+
+            Create the Python program.
+
+        </li>
+
+
+        <li>
+
+            Run the Python program.
+
+        </li>
+
+
+        <li>
+
+            Press the push button.
+
+        </li>
+
+
+        <li>
+
+            Observe the LED changing
+            between ON and OFF.
+
+        </li>
+
+    </ol>
+
+</section>
+
+
+
+<!-- ==============================
+     CODE
+============================== -->
+
+<section
+    class="section"
+    id="code"
+>
+
+    <h2>
+        Python Code
+    </h2>
+
+
+    <div class="code-header">
+
+        <span>
+            experiment1.py
+        </span>
+
+
+        <button
+            class="copy-button"
+            onclick="copyCode()"
+        >
+            Copy Code
+        </button>
+
+    </div>
+
+
+    <pre id="pythonCode"><code>from gpiozero import LED, Button
+from signal import pause
+
+led = LED(17)
+button = Button(27)
+
+def pressed():
+    print("Button Pressed! LED Toggled")
+    led.toggle()
+
+button.when_pressed = pressed
+
+print("Ready... Press button to toggle LED")
+
+pause()</code></pre>
+
+
+    <div class="note">
+
+        <strong>Note:</strong>
+
+        GPIO17 is used for the LED
+        and GPIO27 is used for the push button.
+
+    </div>
+
+</section>
+
+
+
+<!-- ==============================
+     CODE EXPLANATION
+============================== -->
+
+<section class="section">
+
+    <h2>
+        Code Explanation
+    </h2>
+
+
+    <h3>
+        Import gpiozero
+    </h3>
+
+    <div class="connection-box">
+
+        from gpiozero import LED, Button
+
+    </div>
+
+    <p>
+
+        Imports the LED and Button
+        classes required for controlling
+        Raspberry Pi GPIO.
+
+    </p>
+
+
+    <h3>
+        LED GPIO
+    </h3>
+
+    <div class="connection-box">
+
+        led = LED(17)
+
+    </div>
+
+    <p>
+
+        Creates an LED object
+        connected to GPIO17.
+
+    </p>
+
+
+    <h3>
+        Button GPIO
+    </h3>
+
+    <div class="connection-box">
+
+        button = Button(27)
+
+    </div>
+
+    <p>
+
+        Creates a push button object
+        connected to GPIO27.
+
+    </p>
+
+
+    <h3>
+        Toggle LED
+    </h3>
+
+    <div class="connection-box">
+
+        led.toggle()
+
+    </div>
+
+    <p>
+
+        Changes the LED from ON to OFF
+        or from OFF to ON.
+
+    </p>
+
+
+    <h3>
+        Button Event
+    </h3>
+
+    <div class="connection-box">
+
+        button.when_pressed = pressed
+
+    </div>
+
+    <p>
+
+        Calls the pressed function
+        whenever the button is pressed.
+
+    </p>
+
+
+    <h3>
+        Keep Program Running
+    </h3>
+
+    <div class="connection-box">
+
+        pause()
+
+    </div>
+
+    <p>
+
+        Keeps the Python program running
+        so that it can continuously detect
+        button presses.
+
+    </p>
+
+</section>
+
+
+
+<!-- ==============================
+     RUN PROGRAM
+============================== -->
+
+<section class="section">
+
+    <h2>
+        Run the Program
+    </h2>
+
+    <p>
+
+        Open the terminal
+        and run:
+
+    </p>
+
+
+    <div class="connection-box">
+
+        python3 experiment1.py
+
+    </div>
+
+
+    <p>
+
+        After starting the program,
+        the terminal displays:
+
+    </p>
+
+
+    <div class="output-box">
+
+        Ready... Press button to toggle LED
+
+    </div>
+
+</section>
+
+
+
+<!-- ==============================
+     OUTPUT
+============================== -->
+
+<section
+    class="section"
+    id="output"
+>
+
+    <h2>
+        Output
+    </h2>
+
+
+    <p>
+
+        When the push button is pressed,
+        the terminal displays:
+
+    </p>
+
+
+    <div class="output-box">
+
+        Ready... Press button to toggle LED
+        <br><br>
+
+        Button Pressed! LED Toggled
+        <br>
+
+        Button Pressed! LED Toggled
+        <br>
+
+        Button Pressed! LED Toggled
+
+    </div>
+
+
+    <h3>
+        Hardware Output
+    </h3>
+
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Action
+                    </th>
+
+                    <th>
+                        Result
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                <tr>
+
+                    <td>
+                        First Button Press
+                    </td>
+
+                    <td>
+                        LED ON
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        Second Button Press
+                    </td>
+
+                    <td>
+                        LED OFF
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        Third Button Press
+                    </td>
+
+                    <td>
+                        LED ON
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==============================
+     RESULT
+============================== -->
+
+<section class="section">
+
+    <h2>
+        Result
+    </h2>
+
+
+    <div class="result-box">
+
+        The push button and LED were successfully
+        interfaced with the Raspberry Pi.
+
+        <br><br>
+
+        Every time the push button is pressed,
+        the LED connected to GPIO17
+        changes its current state.
+
+        <br><br>
+
+        <strong>
+            Button Pressed → LED Toggles ON/OFF
+        </strong>
+
+    </div>
+
+</section>
+
+
+
+</main>
+
+
+
+<!-- ==============================
+     FOOTER
+============================== -->
+
+<footer>
+
+    <strong>
+        Raspberry Pi Experiment No. 1
+    </strong>
+
+    <br>
+
+    Push Button Controlled LED
+
+</footer>
+
+
+
+<!-- ==============================
+     COPY CODE
+============================== -->
+
+<script>
+
+    function copyCode() {
+
+        const code =
+            document
+            .getElementById("pythonCode")
+            .innerText;
+
+
+        navigator.clipboard
+            .writeText(code);
+
+
+        const button =
+            document
+            .querySelector(".copy-button");
+
+
+        button.innerText =
+            "Copied!";
+
+
+        setTimeout(
+            function () {
+
+                button.innerText =
+                    "Copy Code";
+
+            },
+            1500
+        );
+
+    }
+
+</script>
+
+
+</body>
+
+</html>
